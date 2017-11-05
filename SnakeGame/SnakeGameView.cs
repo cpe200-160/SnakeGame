@@ -18,7 +18,7 @@ namespace Wordpop
         Texture2D snakeTile = null;
         Texture2D foodTile = null;
         Texture2D wallTile = null;
-        private const int TILE_SIZE = 10;
+        private const int TILE_SIZE = 1;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         WordpopModel sbm = null;
@@ -27,41 +27,22 @@ namespace Wordpop
         {
             _w = w;
             _h = h;
-            try
-            {
-                graphics = new GraphicsDeviceManager(this);
-                graphics.PreferredBackBufferWidth = _w * TILE_SIZE;
-                graphics.PreferredBackBufferHeight = _h * TILE_SIZE;
-                Content.RootDirectory = "Content";
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Can't initilize game engine, error is " + e.Message);
-                throw (e);
-            }
+            graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = _w * TILE_SIZE;
+            graphics.PreferredBackBufferHeight = _h * TILE_SIZE;
+            Content.RootDirectory = "Content";            
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            try
+            using (var stream = TitleContainer.OpenStream("Content/black5b5.png"))
             {
-                using (var stream = TitleContainer.OpenStream("Content/black5b5.png"))
-                {
-                    snakeTile = Texture2D.FromStream(this.GraphicsDevice, stream);
-                }
-                using (var stream = TitleContainer.OpenStream("Content/gray5b5.png"))
-                {
-                    foodTile = Texture2D.FromStream(this.GraphicsDevice, stream);
-                }
-                using (var stream = TitleContainer.OpenStream("Content/white5b5.png"))
-                {
-                    wallTile = Texture2D.FromStream(this.GraphicsDevice, stream);
-                }
-            } catch (Exception ex)
+                snakeTile = Texture2D.FromStream(this.GraphicsDevice, stream);
+            }
+            using (var stream = TitleContainer.OpenStream("Content/gray5b5.png"))
             {
-                MessageBox.Show("Can't load asset " + ex.ToString());
-                Exit();
+                foodTile = Texture2D.FromStream(this.GraphicsDevice, stream);
             }
             base.LoadContent();
         }

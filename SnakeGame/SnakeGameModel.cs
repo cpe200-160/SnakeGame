@@ -5,22 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SnakeGame
+namespace Wordpop
 {
-    class SnakeBodyLoc
+    class WordpopLoc
     {
         private int _x;
         private int _y;
         public int X { get { return _x; } } // these two properties are read-only 
         public int Y { get { return _y; } }
-        public SnakeBodyLoc(int x, int y)
+        public WordpopLoc(int x, int y)
         {
             _x = x;
             _y = y;
         }
     }
 
-    public class SnakeGameModel : Model
+    public class WordpopModel : Model
     {
         public const int MOVE_LEFT = 0;
         public const int MOVE_UP = 1;
@@ -42,19 +42,19 @@ namespace SnakeGame
         protected int curHeadX;
         protected int curHeadY;
 
-        protected ArrayList snakeBody;
+        protected ArrayList WordpopBody;
         protected Boolean _isHit;
         protected Boolean _isEating;
 
         public const int TIME_BASE = 250;
         public const int MAX_SPEED = 250;
-        protected static int _speed = 1;
+        protected static int _speed = 2;
 
         public static int Speed
         {
             set
             {
-                if (value > 0 && value < SnakeGameModel.MAX_SPEED)
+                if (value > 0 && value < WordpopModel.MAX_SPEED)
                 {
                     _speed = value;
                 }
@@ -67,7 +67,7 @@ namespace SnakeGame
         public Boolean isEating { get { return _isEating;  } }
         public int[,] Board { get { return _board; } }
 
-        public SnakeGameModel(int w, int h)
+        public WordpopModel(int w, int h)
         {
             boardWidth = w; // width = w = X = col
             boardHeight = h;// height = h = Y = row
@@ -91,7 +91,7 @@ namespace SnakeGame
                 _board[j, h - 1] = BOARD_WALL;
             }
             rand = new Random();
-            snakeBody = new ArrayList();
+            WordpopBody = new ArrayList();
             
          // random the first body sequence, set the head location on the bottom part of the screen
             curHeadY = rand.Next(h/2) + 1;
@@ -99,8 +99,7 @@ namespace SnakeGame
             for (int i = 0; i != SNAKE_INIT_SIZE; i++)
             {
                 curHeadY++;
-                //Snake.Debug("new snake body at [" + curHeadX + ", " + curHeadY + "]");
-                snakeBody.Add(new SnakeBodyLoc(curHeadX, curHeadY));
+                WordpopBody.Add(new WordpopLoc(curHeadX, curHeadY));
                 _board[curHeadX, curHeadY] = BOARD_SNAKE;
             }
             // always start going down
@@ -122,13 +121,13 @@ namespace SnakeGame
             {
                 x = rand.Next(boardWidth);
                 y = rand.Next(boardHeight);
-            } while (isSnakeBody(x, y));
+            } while (isWordpopBody(x, y));
             _board[x, y] = BOARD_FOOD;
         }
 
-        protected bool isSnakeBody(int x, int y)
+        protected bool isWordpopBody(int x, int y)
         {
-            foreach (SnakeBodyLoc sbl in snakeBody)
+            foreach (WordpopLoc sbl in WordpopBody)
             {
                 if (sbl.X == x && sbl.Y == y)
                 {
@@ -163,7 +162,7 @@ namespace SnakeGame
             }
 
             // hit myself?
-            if (isSnakeBody(curHeadX, curHeadY))
+            if (isWordpopBody(curHeadX, curHeadY))
             {
                 _isHit = true;
                 return;
@@ -183,7 +182,7 @@ namespace SnakeGame
             
             // add new head
             //Snake.Debug("new snake body at [" + curHeadX + ", " + curHeadY + "]");
-            snakeBody.Add(new SnakeBodyLoc(curHeadX, curHeadY));
+            WordpopBody.Add(new WordpopLoc(curHeadX, curHeadY));
             _board[curHeadX, curHeadY] = BOARD_SNAKE;
 
             // remove tail;
@@ -191,8 +190,8 @@ namespace SnakeGame
             {
                 try
                 {
-                    SnakeBodyLoc sbl = (SnakeBodyLoc)snakeBody[0];
-                    snakeBody.RemoveAt(0);
+                    WordpopLoc sbl = (WordpopLoc)WordpopBody[0];
+                    WordpopBody.RemoveAt(0);
                     _board[sbl.X, sbl.Y] = BOARD_EMPTY;
                 }
                 catch
@@ -214,9 +213,9 @@ namespace SnakeGame
             _isEating = false;
         }
 
-        public int SnakeLength()
+        public int WordpopLength()
         {
-            return snakeBody.Count;
+            return WordpopBody.Count;
         }
     }
 }
