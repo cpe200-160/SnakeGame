@@ -8,22 +8,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SnakeGame
+namespace Wordpop
 {
-    public class SnakeGameView : Game, View
+    public class WordpopView : Game, View
     {
         private int _w;
         private int _h;
-        private SnakeGameController controller = null;
+        private WordpopController controller = null;
         Texture2D snakeTile = null;
         Texture2D foodTile = null;
         Texture2D wallTile = null;
-        private const int TILE_SIZE = 5;
+        private const int TILE_SIZE = 10;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        SnakeGameModel sbm = null;
+        WordpopModel sbm = null;
 
-        public SnakeGameView(int w, int h)
+        public WordpopView(int w, int h)
         {
             _w = w;
             _h = h;
@@ -96,15 +96,15 @@ namespace SnakeGame
                     foreach (int j in Enumerable.Range(0, _h))
                     {
                         position = new Vector2(i * TILE_SIZE, j * TILE_SIZE);
-                        if (sbm.Board[i, j] == SnakeGameModel.BOARD_SNAKE)
+                        if (sbm.Board[i, j] == WordpopModel.BOARD_SNAKE)
                         {
                             spriteBatch.Draw(snakeTile, position, Color.White);
                         }
-                        else if (sbm.Board[i, j] == SnakeGameModel.BOARD_FOOD)
+                        else if (sbm.Board[i, j] == WordpopModel.BOARD_FOOD)
                         {
                             spriteBatch.Draw(foodTile, position, Color.White);
                         }
-                        else if (sbm.Board[i, j] == SnakeGameModel.BOARD_WALL)
+                        else if (sbm.Board[i, j] == WordpopModel.BOARD_WALL)
                         {
                             spriteBatch.Draw(wallTile, position, Color.White);
                         }
@@ -117,25 +117,25 @@ namespace SnakeGame
 
         public void setController(Controller c)
         {
-            controller = (SnakeGameController)c;
+            controller = (WordpopController)c;
         }
 
         public void Notify(Model m)
         {
             // if it's a SnakeBoardModel, then we know how to handle it
-            if (m is SnakeGameModel)
+            if (m is WordpopModel)
             {
-                sbm = (SnakeGameModel)m;
+                sbm = (WordpopModel)m;
 
                 if (sbm.isHit)
                 {
                     controller.Stop();
-                    MessageBox.Show("Game over!!, your score is " + (sbm.SnakeLength() - SnakeGameModel.SNAKE_INIT_SIZE));
+                    MessageBox.Show("Game over!!, your score is " + (sbm.WordpopLength() - WordpopModel.SNAKE_INIT_SIZE));
                 }
 
                 if (sbm.isEating)
                 {
-                    Snake.Debug("Eating");
+                    Wordpop.Debug("Eating");
                 }
 
             }
