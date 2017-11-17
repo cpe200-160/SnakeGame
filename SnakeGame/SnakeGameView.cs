@@ -8,41 +8,61 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Wordpop
+namespace SnakeGame
 {
-    public class WordpopView : Game, View
+    public class SnakeGameView : Game, View
     {
         private int _w;
         private int _h;
-        private WordpopController controller = null;
+        private SnakeGameController controller = null;
         Texture2D snakeTile = null;
         Texture2D foodTile = null;
         Texture2D wallTile = null;
-        private const int TILE_SIZE = 1;
+        private const int TILE_SIZE = 5;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        WordpopModel sbm = null;
+        SnakeGameModel sbm = null;
 
-        public WordpopView(int w, int h)
+        public SnakeGameView(int w, int h)
         {
             _w = w;
             _h = h;
-            graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = _w * TILE_SIZE;
-            graphics.PreferredBackBufferHeight = _h * TILE_SIZE;
-            Content.RootDirectory = "Content";            
+            try
+            {
+                graphics = new GraphicsDeviceManager(this);
+                graphics.PreferredBackBufferWidth = _w * TILE_SIZE;
+                graphics.PreferredBackBufferHeight = _h * TILE_SIZE;
+                Content.RootDirectory = "Content";
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Can't initilize game engine, error is " + e.Message);
+                throw (e);
+            }
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            using (var stream = TitleContainer.OpenStream("Content/black5b5.png"))
+            try
             {
-                snakeTile = Texture2D.FromStream(this.GraphicsDevice, stream);
+                using (var stream = TitleContainer.OpenStream("Content/black5b5.png"))
+                {
+                    snakeTile = Texture2D.FromStream(this.GraphicsDevice, stream);
+                }
+                using (var stream = TitleContainer.OpenStream("Content/gray5b5.png"))
+                {
+                    foodTile = Texture2D.FromStream(this.GraphicsDevice, stream);
+                }
+                using (var stream = TitleContainer.OpenStream("Content/white5b5.png"))
+                {
+                    wallTile = Texture2D.FromStream(this.GraphicsDevice, stream);
+                }
             }
-            using (var stream = TitleContainer.OpenStream("Content/gray5b5.png"))
+            catch (Exception ex)
             {
-                foodTile = Texture2D.FromStream(this.GraphicsDevice, stream);
+                MessageBox.Show("Can't load asset " + ex.ToString());
+                Exit();
             }
             base.LoadContent();
         }
@@ -77,15 +97,15 @@ namespace Wordpop
                     foreach (int j in Enumerable.Range(0, _h))
                     {
                         position = new Vector2(i * TILE_SIZE, j * TILE_SIZE);
-                        if (sbm.Board[i, j] == WordpopModel.BOARD_SNAKE)
+                        if (sbm.Board[i, j] == SnakeGameModel.BOARD_SNAKE)
                         {
                             spriteBatch.Draw(snakeTile, position, Color.White);
                         }
-                        else if (sbm.Board[i, j] == WordpopModel.BOARD_FOOD)
+                        else if (sbm.Board[i, j] == SnakeGameModel.BOARD_FOOD)
                         {
                             spriteBatch.Draw(foodTile, position, Color.White);
                         }
-                        else if (sbm.Board[i, j] == WordpopModel.BOARD_WALL)
+                        else if (sbm.Board[i, j] == SnakeGameModel.BOARD_WALL)
                         {
                             spriteBatch.Draw(wallTile, position, Color.White);
                         }
@@ -98,25 +118,25 @@ namespace Wordpop
 
         public void setController(Controller c)
         {
-            controller = (WordpopController)c;
+            controller = (SnakeGameController)c;
         }
 
         public void Notify(Model m)
         {
             // if it's a SnakeBoardModel, then we know how to handle it
-            if (m is WordpopModel)
+            if (m is SnakeGameModel)
             {
-                sbm = (WordpopModel)m;
+                sbm = (SnakeGameModel)m;
 
                 if (sbm.isHit)
                 {
                     controller.Stop();
-                    MessageBox.Show("Game over!!, your score is " + (sbm.WordpopLength() - WordpopModel.SNAKE_INIT_SIZE));
+                    MessageBox.Show("Game over!!, your score is " + (sbm.SnakeLength() - SnakeGameModel.SNAKE_INIT_SIZE));
                 }
 
                 if (sbm.isEating)
                 {
-                    Wordpop.Debug("Eating");
+                    Snake.Debug("Eating");
                 }
 
             }
