@@ -17,7 +17,7 @@ namespace SnakeGame
         protected SnakeGameController sgc = null;
 
         protected static Snake _instance = null;
-
+        private bool twoxmode = false;
 
 
         public static void Debug(string str)
@@ -32,7 +32,7 @@ namespace SnakeGame
         public Snake()
         {
             //Singletron here
-            if(_instance == null)
+            if (_instance == null)
             {
                 InitializeComponent();
                 Snake._instance = this;
@@ -49,16 +49,25 @@ namespace SnakeGame
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            if(sgv != null)
+            if (sgv != null)
             {
                 DisposeGame();
             }
             try
             {
                 Snake.Debug("create view");
-                sgv = new SnakeGameView(40, 40);
+                if (twoxmode)
+                {
+                    sgv = new SnakeGameView(80, 80);
+                    sgm = new SnakeGameModel(80, 80);
+                }
+                else
+                {
+                    sgv = new SnakeGameView(40, 40);
+                    sgm = new SnakeGameModel(40, 40);
+                }
+                sgm.resetspeed();
                 Snake.Debug("create model");
-                sgm = new SnakeGameModel(40, 40);
                 Snake.Debug("create controller");
                 sgc = new SnakeGameController();
                 Snake.Debug("attach model");
@@ -71,7 +80,8 @@ namespace SnakeGame
                 Snake.Debug("Start the controller");
                 sgc.Start();
                 sgv.Run();
-            } catch
+            }
+            catch
             {
                 Snake.Debug("Error starting game");
             }
@@ -85,11 +95,12 @@ namespace SnakeGame
         delegate void SetTextCallback(string text);
         private void SetScore(string score)
         {
-            if(this.lblScore.InvokeRequired)
+            if (this.lblScore.InvokeRequired)
             {
                 SetTextCallback d = new SetTextCallback(SetScore);
                 this.Invoke(d, new object[] { score });
-            } else
+            }
+            else
             {
                 this.lblScore.Text = score;
             }
@@ -97,7 +108,7 @@ namespace SnakeGame
 
         public void Notify(Model m)
         {
-            if(m is SnakeGameModel)
+            if (m is SnakeGameModel)
             {
                 SnakeGameModel sbm = m as SnakeGameModel;
                 SetScore((sbm.SnakeLength() - SnakeGameModel.SNAKE_INIT_SIZE).ToString());
@@ -111,11 +122,26 @@ namespace SnakeGame
 
         private void Snake_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(sgv != null)
+            if (sgv != null)
             {
                 sgv.Dispose();
                 sgv.Exit();
             }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            twoxmode = !twoxmode;
+        }
+
+        private void chbDebug_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
+        {
+            twoxmode = !twoxmode;
         }
     }
 }

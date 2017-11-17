@@ -58,7 +58,8 @@ namespace SnakeGame
                 {
                     wallTile = Texture2D.FromStream(this.GraphicsDevice, stream);
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show("Can't load asset " + ex.ToString());
                 Exit();

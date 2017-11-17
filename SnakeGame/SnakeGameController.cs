@@ -25,22 +25,36 @@ namespace SnakeGame
         {
             int direction = -1;
             Keys[] keys = ks.GetPressedKeys();
-           
+
             if (keys.Contains(Keys.Up))
             {
                 direction = SnakeGameModel.MOVE_UP;
             }
-            else if(keys.Contains(Keys.Down))
+            else if (keys.Contains(Keys.Down))
             {
                 direction = SnakeGameModel.MOVE_DOWN;
             }
-            else if(keys.Contains(Keys.Left))
+            else if (keys.Contains(Keys.Left))
             {
                 direction = SnakeGameModel.MOVE_LEFT;
             }
-            else if(keys.Contains(Keys.Right))
+            else if (keys.Contains(Keys.Right))
             {
                 direction = SnakeGameModel.MOVE_RIGHT;
+            }
+            else if (keys.Contains(Keys.Space))
+            {
+                if (timer.Enabled == true)
+                {
+                    timer.Enabled = false;
+                    System.Windows.Forms.MessageBox.Show("Pause");
+
+                }
+                else if (timer.Enabled == false)
+                {
+                    System.Windows.Forms.MessageBox.Show("resume");
+                    timer.Enabled = true;
+                }
             }
             // Find all snakeboard model we know
             if (direction == -1) return;
@@ -59,13 +73,15 @@ namespace SnakeGame
 
         public void Start()
         {
-            timer.Enabled = true; 
+            timer.Enabled = true;
         }
 
         public void Stop()
         {
-            // Stop the game
+
             timer.Enabled = false;
+
+
         }
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e)

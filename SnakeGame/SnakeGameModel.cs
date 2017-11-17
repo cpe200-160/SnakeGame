@@ -49,6 +49,10 @@ namespace SnakeGame
         public const int TIME_BASE = 250;
         public const int MAX_SPEED = 250;
         protected static int _speed = 1;
+        public void resetspeed()
+        {
+            _speed = 1;
+        }
 
         public static int Speed
         {
@@ -61,10 +65,10 @@ namespace SnakeGame
             }
             get { return _speed; }
         }
-        
+
         // Accessor for outsider
-        public Boolean isHit { get{ return _isHit; } }  // this property is also readonly for outsider
-        public Boolean isEating { get { return _isEating;  } }
+        public Boolean isHit { get { return _isHit; } }  // this property is also readonly for outsider
+        public Boolean isEating { get { return _isEating; } }
         public int[,] Board { get { return _board; } }
 
         public SnakeGameModel(int w, int h)
@@ -92,9 +96,9 @@ namespace SnakeGame
             }
             rand = new Random();
             snakeBody = new ArrayList();
-            
-         // random the first body sequence, set the head location on the bottom part of the screen
-            curHeadY = rand.Next(h/2) + 1;
+
+            // random the first body sequence, set the head location on the bottom part of the screen
+            curHeadY = rand.Next(h / 2) + 1;
             curHeadX = rand.Next(w - 1) + 1;
             for (int i = 0; i != SNAKE_INIT_SIZE; i++)
             {
@@ -120,10 +124,11 @@ namespace SnakeGame
             int x, y;
             do
             {
-                x = rand.Next(boardWidth);
-                y = rand.Next(boardHeight);
-            } while (isSnakeBody(x, y));
-            _board[x, y] = BOARD_FOOD;
+
+                x = rand.Next(boardWidth - 2);
+                y = rand.Next(boardHeight - 2);
+            } while (isSnakeBody(x + 1, y + 1));
+            _board[x + 1, y + 1] = BOARD_FOOD;
         }
 
         protected bool isSnakeBody(int x, int y)
@@ -140,7 +145,10 @@ namespace SnakeGame
 
         public void SetDirection(int d)
         {
-            direction = d;
+            if(Math.Abs(direction-d) != 2)
+            {
+                direction = d;
+            }
         }
 
         public void Move()
@@ -180,7 +188,7 @@ namespace SnakeGame
                 _isEating = true;
                 Speed += 1;
             }
-            
+
             // add new head
             //Snake.Debug("new snake body at [" + curHeadX + ", " + curHeadY + "]");
             snakeBody.Add(new SnakeBodyLoc(curHeadX, curHeadY));
